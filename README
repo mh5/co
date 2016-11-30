@@ -1,0 +1,218 @@
+NAME
+    co - a tool that helps you copy and paste text in your terminal when you
+    don't have access to a mouse or don't want to use one.
+
+INSTALLATION
+	Installing co involves four steps. Some of these steps differ depending on
+	the interactive shell you use, but the concepts are the same. Don't forget
+	to substitute with the actual path to the co directory while following the
+	instructions.
+
+    Locating your shell initialization file
+    
+        Refer to the manual corresponding to your interactive shell to locate
+        the path of the initialization script. Normally, zsh uses ~/.zshrc, fish
+        uses ~/.config/fish/config.fish and bash uses either ~/.bashrc,
+        ~/.bash_profile, or ~/.profile.
+
+    Finding the co-hooks.* file corresponding to your interactive shell
+        
+        There are three of these files in co/src. Here is a list of them and
+        their supported shells. Just keep note of the file compatible with your
+        shell.
+
+            co-hooks.sh:   ash, bash, dash, ksh
+            co-hooks.zsh:  zsh
+            co-hooks.fish: fish
+        
+        If you use csh or tcsh, then you can skip this step because none of the
+        above files is compatible with them. This will disable some features
+        like automatically exported line and answer variables. Pull requests to
+        support these shells are welcome.
+        
+
+    Configure the shell initialization file
+        
+        Open your shell initialization script to
+            1) add the co command to your path
+            2) and source the suitable co-hooks.* file.
+
+
+            # sample bash configuration
+            export PATH="$PATH":/path/to/co/src
+            source co-hooks.sh
+            
+            # sample zsh configuration
+            export PATH="$PATH":/path/to/co/src
+            source co-hooks.zsh
+
+            # sample fish configuration
+            set PATH $PATH /path/to/co/src
+            source /path/to/co/src/co-hooks.fish
+            
+            # simple tcsh configuration (no co-hooks)
+            set path = ($path /path/to/co/src)
+
+    Restarting your terminal
+        
+        The co command should be available once you restart your terminal.
+
+
+EXAMPLE
+    Let's say you want to stage a modified file in a git repository you are
+    working on. You would normally type `git status`, use the mouse to select
+    the path of the file you want to stage, type "git add ", and then paste the
+    path of the file. You then hit enter and the file is staged.
+
+    co can help you achieve that without using a mouse. First,  redirect the output
+    to co, and it will redirect it to you with the lines numbered.
+
+        $ git status | co
+        1	On branch master
+        2	Changes not staged for commit:
+        3	  (use "git add <file>..." to update what will be committed)
+        4	  (use "git checkout -- <file>..." to discard changes in working directory)
+        5	
+        6		modified:   /very/long/path/to/file_v4521.cpp
+        7		modified:   /very/long/path/to/file_v552.cpp
+        8		modified:   /very/long/path/to/file_v952.cpp
+        9		modified:   /very/long/path/to/file_v552.cpp
+        10		modified:   /short/path/to/another_file.cpp
+        11
+    
+    If you want to stage the third file, you can do it as following.
+
+        # you need to copy the 2nd word in the 8th line
+        $ co 8 2
+        /very/long/path/to/file_v952.cpp
+
+        # the previous output is now in $ans
+        $ git add $ans
+
+    There are a few other tricks to type even less than that, but this is a
+    quick example. Read the rest of the manual for more cool things.
+
+DEFINITIONS
+    Buffer: the most recent stdin supplied to co.
+        For example, the buffer in the following case is the output of `ls`.
+
+            $ ls | co 7 1
+
+        If co is executed without stdin, the buffer will still contain the
+        contents of the last stdin supplied to it.
+            
+            $ co 7 1
+
+USAGE
+    co help
+        Display the manual (this page).
+
+    co clear
+        Clear the buffer and all the variables exported by co.
+
+    co
+        Display the buffer as a numbered listing.
+
+    co J
+        Print the Jth line in the buffer (without numbering, of course).
+
+    co J K
+        Print the Kth word in the Jth line in the buffer. If K is possitive, the
+        words are one-indexed. If it is negative, words are counted from the end
+        of the line.
+    
+    co J:K
+        Print all the lines starting from the Jth line until the Kth line in the
+        buffer.
+    
+    co J K:L
+        Print the Kth word, and all the text after it until the end of the Lth
+        word in the Jth line in the buffer.
+
+VARIABLES
+    co sets some variables to reduce the amount of text you need to type.
+    
+    The answer variables
+        By default, co sets a variable named ans to contain the last output
+        printed by the commands of the form "co J [K[:L]]". So both of the
+        following commands should print the same output.
+
+        $ ls -la | co 7 2
+        $ echo $ans
+        
+        Older values of $ans will be available in $ans1, $ans2, and $ans9. The
+        number of stored answer variables is specified by the configuration as
+        will be shown in a subsequent section.
+		
+    Line variables
+       By default, co sets a variable for every line of the first 50 lines in
+       the buffer. These variables are named l1, l2, l3, ... , and l50 (the
+       first character is a small L, not a capital i). So instead of typing
+       "$(co 7)", you can type "$l7". This, however, doesn't update the answer
+       variable.
+
+CONFIGURATION
+    Configuration is read from ~/.co/conf. Settings are written in the form of
+    "key=value". Here is sample configuration which sets every variable to its
+    default.
+        
+        # the maximum number of lines to be exported as variables
+        co_lines_max=50
+
+        # the prefix for line variables
+        co_lines_prefix=l
+
+        # the maximum number of answer variables to be saved
+        co_ans_max=10
+
+        # the name of the answer variable
+        co_ans_prefix=ans
+
+        # a string that will be printed before every even line
+        local co_even_decoration="$(tput bold)"
+
+        # a string that will be printed before every odd line
+        local co_odd_decoration="$(tput sgr0)"
+
+        # whether co_even_decoration and co_odd_decoration will be considered
+        local co_decorate=1
+
+ERROR HANDLING
+    When an error occurs, co exits with an error status and doesn't print
+    anything. This is intended to prevent the user from accidentally piping
+    irrelevant text to another tool.
+
+MISC.
+    Sensitive data
+        Data piped to co is stored for later use in some files (located in
+        ~/.co/) and is exported in some variables (like $ans, $l1, l2, etc...).
+        It's not advised to feed co with sensitive data. If you did, then as a
+        rudimentary security measure, consider issuing "co clear" erease the
+        buffer and the exported variables.
+
+    Catching stderr
+        The way to pipe the stderr of a command to co depends on the shell you
+        use. Bash users can use the |& construct, which pipes both stdout and
+        stderr.
+            
+            $ gcc |& co
+
+    Navigation and search
+        You can use co within a pager. This can make navigation and searching
+        more convenient.
+
+            $ find . | co | less
+
+    System clipboard
+        Pasting to the clipboard depends on your system. For example, if you are
+        using the X windowing system (and you probably do), then you can use an
+        external tool like xclip to paste text to the system clipboard.
+        
+            $ co 3 2 | xclip -sel clip
+        
+        If typing "xclip -sel clip" is a lot of work, then consider creating an
+        alias for it.
+    
+HISTORY
+    2016 - Originally written by M. Helmy Hemeda.
+
