@@ -169,13 +169,13 @@ CONFIGURATION
         co_ans_prefix=ans
 
         # a string that will be printed before every even line
-        local co_even_decoration="$(tput bold)"
+        co_even_decoration="$(tput bold)"
 
         # a string that will be printed before every odd line
-        local co_odd_decoration="$(tput sgr0)"
+        co_odd_decoration="$(tput sgr0)"
 
         # whether co_even_decoration and co_odd_decoration will be considered
-        local co_decorate=1
+        co_decorate=1
 
 ERROR HANDLING
     When an error occurs, co exits with an error status and doesn't print
