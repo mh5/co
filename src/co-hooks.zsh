@@ -1,16 +1,20 @@
 # This file can be sourced from zsh shells.
 
 function load_co_variables() {
-	# handle line variables
-	if [[ -f ~/.co/dirt ]]; then
-		source ~/.co/populate.sh;
-		rm ~/.co/dirt
+	if ! [[ -n "$co_cache" ]]; then
+		co_cache="$HOME"/.co
 	fi
-
-	# handle answer variables
-	if [[ -f ~/.co/ans-dirt ]]; then
-		source ~/.co/ans.sh;
-		rm ~/.co/ans-dirt
+	
+	# line variables
+	if [[ -f "$co_cache"/dirt ]]; then
+		. "$co_cache"/populate.sh
+		rm "$co_cache"/dirt
+	fi
+	
+	# answer variables
+	if [[ -f "$co_cache"/ans-dirt ]]; then
+		. "$co_cache"/ans.sh
+		rm "$co_cache"/ans-dirt
 	fi
 }
 

@@ -68,9 +68,16 @@ highlight_lines () {
 	fi
 }
 
+# writes a setting of the form $2=$3 to the file $1
+append_setting () {
+	local lvalue="$2"
+	local rvalue="\"$(echo "$3" | sanitize_string)\""
+	echo "$lvalue=$rvalue" >> "$1"
+}
+
 # writes the answer variable
 write_ans () {
-	local co_file_ans_temp="$HOME"/.co/ans-temp
+	local co_file_ans_temp="$co_cache"/ans-temp
 
 	echo "$1"
 
@@ -78,11 +85,8 @@ write_ans () {
 	head -n -1 "$co_file_ans" > "$co_file_ans_temp"
 	mv "$co_file_ans_temp" "$co_file_ans"
 	
-	# append the new assignment
-	local lvalue="$co_ans_prefix"
-	local rvalue="\"$(echo "$1" | sanitize_string)\""
-	echo "$lvalue=$rvalue" >> "$co_file_ans"
-
+	# append the new answer
+	append_setting "$co_file_ans" "$co_ans_prefix" "$1"
 
 	# prepend shiftings (i.e., ans2="$ans1", ans1="$ans", etc.)
 	variables_count="$(wc -l "$co_file_ans" | awk '{print $1}')"
@@ -101,16 +105,31 @@ write_ans () {
 }
 
 load_configuration () {
-	# set files names
-	co_file_lines="$HOME"/.co/populate.sh
-	co_file_ans="$HOME"/.co/ans.sh
-	co_file_buffer="$HOME"/.co/output
-	co_file_conf="$HOME"/.co/conf
-	co_file_lines_dirt="$HOME"/.co/dirt
-	co_file_ans_dirt="$HOME"/.co/ans-dirt
 
-	mkdir -p ~/.co/
+	# if no path for co cache is specified, default to ~/.co
+	if ! [ -n "$co_cache" ]; then
+		co_cache="$HOME"/.co
+	fi
+
+	# set files names
+	co_file_lines="$co_cache"/populate.sh
+	co_file_ans="$co_cache"/ans.sh
+	co_file_buffer="$co_cache"/output
+	co_file_conf="$co_cache"/conf
+	co_file_lines_dirt="$co_cache"/dirt
+	co_file_ans_dirt="$co_cache"/ans-dirt
+	co_file_hooks_conf="$co_cache"/hooks-conf.sh
+
+	mkdir -p "$co_cache"
 	touch "$co_file_ans" "$co_file_lines" "$co_file_buffer" "$co_file_conf"
+
+	# some of the previous variables are needed by co-hooks.*
+	> "$co_file_hooks_conf"
+	#append_setting "$co_file_hooks_conf" "co_file_lines" "$co_file_lines"
+	#append_setting "$co_file_hooks_conf" "co_file_ans" "$co_file_ans"
+	#append_setting "$co_file_hooks_conf" "co_file_lines_dirt" "$co_file_lines_dirt"
+	#append_setting "$co_file_hooks_conf" "co_file_ans_dirt" "$co_file_ans_dirt"
+
 
 	# default configuration
 	co_lines_max=50

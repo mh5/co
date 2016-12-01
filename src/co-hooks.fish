@@ -10,20 +10,26 @@ function reformat_assignments
 end
 
 function load_co_variables --on-event fish_postexec
+	
+	# if no path for co cache is specified, default to ~/.co
+	if [ ! "$co_cache" ]
+		set co_cache "$HOME"/.co
+	end
+	
 	# handle line variables
-	if test -e ~/.co/dirt
-		reformat_assignments ~/.co/populate.sh
-		source ~/.co/populate.sh-fish
-		true > ~/.co/populate.sh-fish
-		rm ~/.co/dirt
+	if test -e "$co_cache"/dirt
+		reformat_assignments "$co_cache"/populate.sh
+		source "$co_cache"/populate.sh-fish
+		true > "$co_cache"/populate.sh-fish
+		rm "$co_cache"/dirt
 	end
 
 	# handle answer variables
-	if test -e ~/.co/ans-dirt
-		reformat_assignments ~/.co/ans.sh
-		source ~/.co/ans.sh-fish
-		true > ~/.co/ans.sh-fish
-		rm ~/.co/ans-dirt
+	if test -e "$co_cache"/ans-dirt
+		reformat_assignments "$co_cache"/ans.sh
+		source "$co_cache"/ans.sh-fish
+		true > "$co_cache"/ans.sh-fish
+		rm "$co_cache"/ans-dirt
 	end
 end
 
