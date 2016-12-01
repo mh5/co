@@ -60,7 +60,7 @@ arrange_indices () {
 
 # decorates stdin
 highlight_lines () {
-	if [ "$co_decorate" -eq 1 ]; then
+	if [ -t 1 ] && [ "$co_decorate" -eq 1 ]; then
 		awk "{if(NR%2) print \"$co_even_decoration\"\$0; else print \"$co_odd_decoration\"\$0}"
 		printf "$(tput sgr0)"
 	else
