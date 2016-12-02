@@ -123,14 +123,6 @@ load_configuration () {
 	mkdir -p "$co_cache"
 	touch "$co_file_ans" "$co_file_lines" "$co_file_buffer" "$co_file_conf"
 
-	# some of the previous variables are needed by co-hooks.*
-	> "$co_file_hooks_conf"
-	#append_setting "$co_file_hooks_conf" "co_file_lines" "$co_file_lines"
-	#append_setting "$co_file_hooks_conf" "co_file_ans" "$co_file_ans"
-	#append_setting "$co_file_hooks_conf" "co_file_lines_dirt" "$co_file_lines_dirt"
-	#append_setting "$co_file_hooks_conf" "co_file_ans_dirt" "$co_file_ans_dirt"
-
-
 	# default configuration
 	co_lines_max=50
 	co_lines_prefix=l
@@ -139,9 +131,15 @@ load_configuration () {
 	co_even_decoration="$(tput bold)"
 	co_odd_decoration="$(tput sgr0)"
 	co_decorate=1
+	co_on_ans=""
 
 	# override default configuration
 	. "$co_file_conf"
+
+	# some of the previous variables are needed by co-hooks.*
+	> "$co_file_hooks_conf"
+	append_setting "$co_file_hooks_conf" "co_on_ans" "$co_on_ans"
+
 }
 
 handle_stdin () {

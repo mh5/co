@@ -1,8 +1,13 @@
 # This file can be sourced from zsh shells.
 
 function load_co_variables() {
+	# if no path for co cache is specified, default to ~/.co
 	if ! [[ -n "$co_cache" ]]; then
 		co_cache="$HOME"/.co
+	fi
+
+	if [[ -e "$co_cache"/hooks-conf.sh ]]; then
+		source "$co_cache"/hooks-conf.sh
 	fi
 	
 	# line variables
@@ -15,6 +20,7 @@ function load_co_variables() {
 	if [[ -f "$co_cache"/ans-dirt ]]; then
 		. "$co_cache"/ans.sh
 		rm "$co_cache"/ans-dirt
+		eval "$co_on_ans"
 	fi
 }
 

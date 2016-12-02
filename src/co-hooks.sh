@@ -6,6 +6,10 @@ load_co_variables () {
 	if ! [ -n "$co_cache" ]; then
 		co_cache="$HOME"/.co
 	fi
+	
+	if [ -e "$co_cache"/hooks-conf.sh ]; then
+		. "$co_cache"/hooks-conf.sh
+	fi
 
 	# line variables
 	if [ -f "$co_cache"/dirt ]; then
@@ -17,6 +21,7 @@ load_co_variables () {
 	if [ -f "$co_cache"/ans-dirt ]; then
 		. "$co_cache"/ans.sh
 		rm "$co_cache"/ans-dirt
+		eval "$co_on_ans"
 	fi
 }
 

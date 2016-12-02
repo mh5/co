@@ -177,6 +177,12 @@ CONFIGURATION
         # whether co_even_decoration and co_odd_decoration will be considered
         co_decorate=1
 
+        # a string to be evaluated as a command by your interactive shell when
+        # the answer variable is changed. You can set this variable to paste
+        # answers into the system clipboard.
+        co_on_ans=""
+        #co_on_ans='echo "$ans" | xclip -sel clip'
+
 ERROR HANDLING
     When an error occurs, co exits with an error status and doesn't print
     anything. This is intended to prevent the user from accidentally piping

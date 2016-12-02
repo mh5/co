@@ -15,6 +15,12 @@ function load_co_variables --on-event fish_postexec
 	if [ ! "$co_cache" ]
 		set co_cache "$HOME"/.co
 	end
+
+	if test -e "$co_cache"/hooks-conf.sh
+		reformat_assignments "$co_cache"/hooks-conf.sh
+		source "$co_cache"/hooks-conf.sh-fish
+		true > "$co_cache"/hooks-conf.sh-fish
+	end
 	
 	# handle line variables
 	if test -e "$co_cache"/dirt
@@ -30,6 +36,7 @@ function load_co_variables --on-event fish_postexec
 		source "$co_cache"/ans.sh-fish
 		true > "$co_cache"/ans.sh-fish
 		rm "$co_cache"/ans-dirt
+		eval "$co_on_ans"
 	end
 end
 
