@@ -197,6 +197,11 @@ handle_args () {
 	elif [ "$#" -eq 0 ] && [ -t 0 ]; then
 		nl -ba "$co_file_buffer" | highlight_lines
 
+	# co
+	elif [ "$#" -eq 0 ] && ! [ -t 0 ]; then
+		# already printed
+		true
+
 	# co J
 	elif [ "$#" -eq 1 ] && is_pos "$1"; then
 		local ans="$(tail -n "+$1"  "$co_file_buffer" | head -n 1)"
