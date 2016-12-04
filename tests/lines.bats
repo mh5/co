@@ -9,7 +9,6 @@ setup () {
 ### selecting lines in a single step, e.g., `ls | co 1' ###
 
 @test "(single step) selecting one line out of one line" {
-	echo lozl
 	result="$(echo "Hello, world!" | co 1)"
 	[ "$result" = "Hello, world!" ]
 }
@@ -45,7 +44,6 @@ setup () {
 }
 
 @test "(two steps) selecting last line out of multiple lines" {
-	printf meh
 	printf "abc def\nghi  jkl\nmno pqr" | co
 	result="$(co 3)"
 	[ "$result" = "mno pqr" ]
