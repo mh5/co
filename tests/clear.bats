@@ -23,6 +23,12 @@ setup () {
 	[ "$l3" = "" ]
 	[ "$l4" = "" ]
 	[ "$l5" = "" ]
+	
+	
+	# TODO: this should be done by the trap
+	> "$co_cache"/ans.sh
+	> "$co_cache"/populate.sh
+	> "$co_cache"/hooks-conf.sh
 }
 
 @test "clearing cache files" {

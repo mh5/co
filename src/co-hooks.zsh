@@ -6,6 +6,7 @@ function load_co_variables() {
 		co_cache="$HOME"/.co
 	fi
 
+	# load hooks configuration written by the main script
 	if [[ -e "$co_cache"/hooks-conf.sh ]]; then
 		source "$co_cache"/hooks-conf.sh
 	fi
@@ -21,6 +22,14 @@ function load_co_variables() {
 		. "$co_cache"/ans.sh
 		rm "$co_cache"/ans-dirt
 		eval "$co_on_ans"
+	fi
+
+	# if the clear flag is on
+	if [[ "$co_clear" = "1" ]]; then
+		> "$co_cache"/ans.sh
+		> "$co_cache"/populate.sh
+		> "$co_cache"/hooks-conf.sh
+		co_clear=""
 	fi
 }
 

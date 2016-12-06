@@ -38,5 +38,12 @@ function load_co_variables --on-event fish_postexec
 		rm "$co_cache"/ans-dirt
 		eval "$co_on_ans"
 	end
+	
+	if [ "$co_clear" = "1" ]
+		true > "$co_cache"/ans.sh
+		true > "$co_cache"/populate.sh
+		true > "$co_cache"/hooks-conf.sh
+		set -g co_clear ""
+	end
 end
 

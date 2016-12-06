@@ -192,6 +192,7 @@ handle_args () {
 		# raise dirty flag
 		touch "$co_file_lines_dirt"
 		touch "$co_file_ans_dirt"
+		append_setting "$co_file_hooks_conf" "co_clear" 1
 
 	# co
 	elif [ "$#" -eq 0 ] && [ -t 0 ]; then
