@@ -128,8 +128,8 @@ load_configuration () {
 	co_lines_prefix=l
 	co_ans_prefix=ans
 	co_ans_max=10
-	co_even_decoration="$(tput bold)"
-	co_odd_decoration="$(tput sgr0)"
+	co_even_decoration="$(tput sgr0)"
+	co_odd_decoration="$(tput bold)"
 	co_decorate=1
 	co_on_ans=""
 

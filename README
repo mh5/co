@@ -169,10 +169,10 @@ CONFIGURATION
         co_ans_prefix=ans
 
         # a string that will be printed before every even line
-        co_even_decoration="$(tput bold)"
+        co_even_decoration="$(tput sgr0)"
 
         # a string that will be printed before every odd line
-        co_odd_decoration="$(tput sgr0)"
+        co_odd_decoration="$(tput bold)"
 
         # whether co_even_decoration and co_odd_decoration will be considered
         co_decorate=1
